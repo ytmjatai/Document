@@ -26,13 +26,97 @@
 18.index.js—组件入口
 ## 源码解析
 #### index.js入口
-![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508103955379-1022254739.jpg)
+```javascript
+/**
+ * 配置语言、加载组件
+ * @param {Object} Vue 
+ * @param {Object} opts 
+ */
+const install = function(Vue, opts = {}) {
+    if (install.installed) return;
+    locale.use(opts.locale);
+    locale.i18n(opts.i18n);
+
+    Object.keys(iview).forEach(key => {
+        Vue.component(key, iview[key]);
+    });
+
+    Vue.prototype.$Loading = LoadingBar;
+    Vue.prototype.$Message = Message;
+    Vue.prototype.$Modal = Modal;
+    Vue.prototype.$Notice = Notice;
+    Vue.prototype.$Spin = Spin;
+};
+/**
+ * 在浏览器环境下默认加载组件
+ */
+// auto install
+if (typeof window !== 'undefined' && window.Vue) {
+    install(window.Vue);
+}
+/**
+ * 组件vue.user的对象
+ */
+const API = {
+    version: process.env.VERSION, // eslint-disable-line no-undef
+    locale: locale.use,
+    i18n: locale.i18n,
+    install,
+    Circle,
+    Switch,
+    ...components
+};
+
+API.lang = (code) => {
+    const langObject = window['iview/locale'].default;
+    if (code === langObject.i.locale) locale.use(langObject);
+    else console.log(`The ${code} language pack is not loaded.`); // eslint-disable-line no-console
+};
+/**
+ * 输出对象
+ */
+module.exports.default = module.exports = API;   // eslint-disable-line no-undef
+
+```
 在examples文件中的main.js中加载iview组件
 ![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508105815997-1505796350.jpg)
 
 #### 知识点：use
 vue的use源码：<br/>
-![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508105459571-1871148443.jpg)<br/>
+```javascript
+import { toArray } from '../util/index'
+
+export function initUse (Vue: GlobalAPI) {
+    /**
+     * 判断参数fn是fn的话直接运行fn，是对象的话运行对象里的install方法
+     * @param {Function|Object} plugin 下面参数类型限制是typescript的写法
+     * @returns Vue
+     */
+  Vue.use = function (plugin: Function | Object) {
+    //   判断该方法或对象是否已经注册过
+    const installedPlugins = (this._installedPlugins || (this._installedPlugins = []))
+    if (installedPlugins.indexOf(plugin) > -1) {
+      return this
+    }
+      
+    // 将参数转化为数组
+    const args = toArray(arguments, 1)
+    // 把vue对象插到数组第一个
+    args.unshift(this)
+    // 判断plugin对象的install是否是方法
+    if (typeof plugin.install === 'function') {
+        // 将plugin对象的install执行并且this指向plugin
+      plugin.install.apply(plugin, args)
+    //   如果plugin是方法
+    } else if (typeof plugin === 'function') {
+    // 执行plugin方法this指向null
+      plugin.apply(null, args)
+    }
+    installedPlugins.push(plugin)
+    return this
+  }
+}
+```
 看源码我们可以知道在我们以后编写插件的时候可以有两种方式。
 一种是将这个插件的逻辑封装成一个对象最后将最后在install编写业务代码暴露给Vue对象。这样做的好处是可以添加任意参数在这个对象上方便将install函数封装得更加精简，可拓展性也比较高。
 还有一种则是将所有逻辑都编写成一个函数暴露给Vue。
@@ -59,6 +143,6 @@ button的功能不是很多，主要是样式，所以学习button组件大部�
 ![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508140411065-1249008860.jpg)<br/>
 3.按钮组合<br/>
 ![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508140453326-1122783610.jpg)<br/>
-更细的分类可以看iview组件api
- 
+更细的分类可以看iview组件api。
+
 
