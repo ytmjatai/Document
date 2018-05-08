@@ -23,7 +23,7 @@
 17.utils—组件内部公共方法<br/>
 18.index.js—组件入口
 ## 源码解析
-#### index.js入口
+#### index.js入口<br/>
 ![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508103955379-1022254739.jpg)
 在examples文件中的main.js中加载iview组件
 ![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508105815997-1505796350.jpg)
