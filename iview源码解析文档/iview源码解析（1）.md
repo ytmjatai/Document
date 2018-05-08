@@ -143,6 +143,6 @@ button的功能不是很多，主要是样式，所以学习 button 组件大部
 ![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508140411065-1249008860.jpg)<br/>
 3.按钮组合<br/>
 ![](https://images2018.cnblogs.com/blog/960483/201805/960483-20180508140453326-1122783610.jpg)<br/>
-更细的分类可以看 iview 组件 api。
+更细的分类可以看 iview 组件 <a href="https://www.iviewui.com/components/button" target="_blank">api</a>。
 
 
